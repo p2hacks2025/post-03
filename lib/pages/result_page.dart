@@ -2,13 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class ResultPage extends StatelessWidget {
-  final File originalImage;
-  final String illuminationStyle;
+  final File audioFile;
+  final String effectStyle;
 
   const ResultPage({
     super.key,
-    required this.originalImage,
-    required this.illuminationStyle,
+    required this.audioFile,
+    required this.effectStyle,
   });
 
   @override
@@ -18,68 +18,49 @@ class ResultPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'イルミネーション：$illuminationStyle',
+              '選択エフェクト：$effectStyle',
               style: const TextStyle(fontSize: 16),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
-            Expanded(
-              child: Row(
-                children: [
-                  // Before
-                  Expanded(
-                    child: Column(
-                      children: [
-                        const Text('Before'),
-                        const SizedBox(height: 8),
-                        Expanded(
-                          child: Image.file(
-                            originalImage,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(width: 8),
-
-                  // After（ダミー）
-                  Expanded(
-                    child: Column(
-                      children: [
-                        const Text('After'),
-                        const SizedBox(height: 8),
-                        Expanded(
-                          child: Container(
-                            color: Colors.grey.shade200,
-                            child: const Center(
-                              child: Text(
-                                '生成結果（準備中）',
-                                style: TextStyle(color: Colors.black54),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            // 元音声
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.audiotrack),
+                title: const Text('元の音声'),
+                subtitle: Text(
+                  audioFile.path.split('/').last,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            ElevatedButton(
+            // 生成結果（ダミー）
+            Card(
+              color: Colors.grey.shade100,
+              child: const ListTile(
+                leading: Icon(Icons.auto_awesome),
+                title: Text('生成後の音声'),
+                subtitle: Text('キラキラ加工済み（準備中）'),
+              ),
+            ),
+
+            const Spacer(),
+
+            ElevatedButton.icon(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('保存しました（仮）')),
                 );
               },
-              child: const Text('保存'),
+              icon: const Icon(Icons.save),
+              label: const Text('保存'),
             ),
           ],
         ),
