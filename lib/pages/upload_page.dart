@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import '../widgets/image_pic_widget.dart';
+import '../widgets/loading_dialog.dart';
+import 'result_page.dart';
 
 class UploadPage extends StatefulWidget {
   const UploadPage({super.key});
@@ -13,33 +15,23 @@ class _UploadPageState extends State<UploadPage> {
   File? _selectedImage;
   String _selectedStyle = 'シンプル';
 
-  final ImagePicker _picker = ImagePicker();
+  Future<void> _executeSimulation() async {
+    LoadingDialog.show(context);
 
-  Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    await Future.delayed(const Duration(seconds: 2));
 
-    if (image != null) {
-      setState(() {
-        _selectedImage = File(image.path);
-      });
-    }
-  }
+    if (!mounted) return;
 
-  void _executeSimulation() {
-    // ここではまだ Python API には送らない
-    // 次のステップで実装予定
+    // 必ず先にロードを閉じる
+    LoadingDialog.hide(context);
 
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('実行内容確認'),
-        content: Text('画像: 選択済み\nイルミネーション: $_selectedStyle'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ResultPage(
+          originalImage: _selectedImage!,
+          illuminationStyle: _selectedStyle,
+        ),
       ),
     );
   }
@@ -49,31 +41,20 @@ class _UploadPageState extends State<UploadPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('イルミネーションシミュレーション')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 画像プレビュー領域
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: _selectedImage == null
-                    ? const Center(child: Text('木の画像をアップロードしてください'))
-                    : Image.file(_selectedImage!, fit: BoxFit.contain),
-              ),
+            ImagePickWidget(
+              onImageSelected: (file) {
+                setState(() {
+                  _selectedImage = file;
+                });
+              },
             ),
 
             const SizedBox(height: 16),
 
-            // 画像選択ボタン
-            ElevatedButton(onPressed: _pickImage, child: const Text('画像を選択')),
-
-            const SizedBox(height: 16),
-
-            // イルミネーション選択
             Row(
               children: [
                 const Text('イルミネーション：'),
@@ -94,9 +75,8 @@ class _UploadPageState extends State<UploadPage> {
               ],
             ),
 
-            const SizedBox(height: 24),
+            const Spacer(),
 
-            // 実行ボタン
             ElevatedButton(
               onPressed: _selectedImage == null ? null : _executeSimulation,
               child: const Text('実行'),
