@@ -40,7 +40,7 @@ class _AudioPickWidgetState extends State<AudioPickWidget> {
       child: Container(
         height: 120,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
+          border: Border.all(color: Colors.white54),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Center(
@@ -48,9 +48,9 @@ class _AudioPickWidgetState extends State<AudioPickWidget> {
               ? const Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.audiotrack, size: 48, color: Colors.grey),
+                    Icon(Icons.audiotrack, size: 48, color: Colors.white54),
                     SizedBox(height: 8),
-                    Text('音声ファイルを選択'),
+                    Text('音声ファイルを選択', style: TextStyle(color: Colors.white)),
                   ],
                 )
               : Column(
