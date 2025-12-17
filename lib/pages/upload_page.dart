@@ -16,13 +16,13 @@ class _UploadPageState extends State<UploadPage> {
   File? _selectedAudio;
   String _selectedStyle = 'シンプル';
 
-  Future<void> _executeSimulation() async {
+Future<void> _executeSimulation() async {
   if (_selectedAudio == null) return;
 
   LoadingDialog.show(context);
 
   try {
-    final result = await ApiService.uploadAudio(
+    final File processedAudio = await ApiService.uploadAudio(
       audioFile: _selectedAudio!,
       style: _selectedStyle,
     );
@@ -34,12 +34,12 @@ class _UploadPageState extends State<UploadPage> {
       context,
       MaterialPageRoute(
         builder: (_) => ResultPage(
-          audioFile: _selectedAudio!,
+          originalAudio: _selectedAudio!,
+          processedAudio: processedAudio,
           effectStyle: _selectedStyle,
         ),
       ),
     );
-
   } catch (e) {
     if (!mounted) return;
     LoadingDialog.hide(context);
@@ -49,6 +49,7 @@ class _UploadPageState extends State<UploadPage> {
     );
   }
 }
+
 
   @override
   Widget build(BuildContext context) {

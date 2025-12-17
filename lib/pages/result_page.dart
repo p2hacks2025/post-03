@@ -1,15 +1,46 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
-class ResultPage extends StatelessWidget {
-  final File audioFile;
+class ResultPage extends StatefulWidget {
+  final File originalAudio;
+  final File processedAudio;
   final String effectStyle;
 
   const ResultPage({
     super.key,
-    required this.audioFile,
+    required this.originalAudio,
+    required this.processedAudio,
     required this.effectStyle,
   });
+
+  @override
+  State<ResultPage> createState() => _ResultPageState();
+}
+
+class _ResultPageState extends State<ResultPage> {
+  final AudioPlayer _player = AudioPlayer();
+  File? _current;
+  bool _isPlaying = false;
+
+  Future<void> _play(File file) async {
+    if (_isPlaying) {
+      await _player.stop();
+    }
+
+    await _player.play(DeviceFileSource(file.path));
+
+    setState(() {
+      _current = file;
+      _isPlaying = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +52,7 @@ class ResultPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              '選択エフェクト：$effectStyle',
+              '選択エフェクト：${widget.effectStyle}',
               style: const TextStyle(fontSize: 16),
             ),
 
@@ -32,22 +63,27 @@ class ResultPage extends StatelessWidget {
               child: ListTile(
                 leading: const Icon(Icons.audiotrack),
                 title: const Text('元の音声'),
-                subtitle: Text(
-                  audioFile.path.split('/').last,
-                  overflow: TextOverflow.ellipsis,
+                subtitle: Text(widget.originalAudio.path.split('/').last),
+                trailing: IconButton(
+                  icon: const Icon(Icons.play_arrow),
+                  onPressed: () => _play(widget.originalAudio),
                 ),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            // 生成結果（ダミー）
+            // 生成後音声
             Card(
-              color: Colors.grey.shade100,
-              child: const ListTile(
-                leading: Icon(Icons.auto_awesome),
-                title: Text('生成後の音声'),
-                subtitle: Text('キラキラ加工済み（準備中）'),
+              color: Colors.purple.shade50,
+              child: ListTile(
+                leading: const Icon(Icons.auto_awesome),
+                title: const Text('生成後の音声'),
+                subtitle: Text(widget.processedAudio.path.split('/').last),
+                trailing: IconButton(
+                  icon: const Icon(Icons.play_arrow),
+                  onPressed: () => _play(widget.processedAudio),
+                ),
               ),
             ),
 
