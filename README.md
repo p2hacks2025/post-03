@@ -57,7 +57,8 @@ Crestarl
 - 
 
 ## スクリーンショット(任意)
-ここにはスクリーンショットを貼ります。そのままでもよいですし、画像を編集しておしゃれにしてもよいです(全くの捏造というのはしないでください)。GitHubのエディタに画像をドロップ&ドロップすると張り付きます。<img width="611" height="1017" alt="アプリ画面_スクリーンショット" src="https://github.com/user-attachments/assets/8e512c25-b99a-4f55-81af-2207d572c7be" />
+ここにはスクリーンショットを貼ります。そのままでもよいですし、画像を編集しておしゃれにしてもよいです(全くの捏造というのはしないでください)。GitHubのエディタに画像をドロップ&ドロップすると張り付きます。<img width="611" height="1017" alt="アプリ画面_スクリーンショット" src="https://github.com/user-attachments/assets/8e512c25-b99a-4f55-81af-2207d572c7be" /><img width="612" height="1018" alt="アプリ画面" src="https://github.com/user-attachments/assets/d97f4b6d-decd-42ef-9dad-9a5026b9e888" />
+
 
 
 ## 開発体制
