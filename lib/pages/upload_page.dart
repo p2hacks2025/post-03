@@ -16,7 +16,7 @@ class UploadPage extends StatefulWidget {
 class _UploadPageState extends State<UploadPage>
     with SingleTickerProviderStateMixin {
   File? _selectedAudio;
-  String _selectedStyle = 'シンプル';
+  String _selectedStyle = 'simple';
 
   late final AnimationController _shineController;
 
@@ -63,9 +63,9 @@ class _UploadPageState extends State<UploadPage>
       if (!mounted) return;
       LoadingDialog.hide(context);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('エラー: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('エラー: $e')));
     }
   }
 
@@ -219,28 +219,25 @@ class _UploadPageState extends State<UploadPage>
                             color: Colors.black.withOpacity(0.25),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color:
-                                  Colors.cyanAccent.withOpacity(0.4),
+                              color: Colors.cyanAccent.withOpacity(0.4),
                             ),
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               value: _selectedStyle,
-                              dropdownColor:
-                                  const Color(0xFF2A004F),
-                              style:
-                                  const TextStyle(color: Colors.white),
+                              dropdownColor: const Color(0xFF2A004F),
+                              style: const TextStyle(color: Colors.white),
                               items: const [
                                 DropdownMenuItem(
-                                  value: 'シンプル',
+                                  value: 'simple',
                                   child: Text('シンプル'),
                                 ),
                                 DropdownMenuItem(
-                                  value: 'キラキラ',
+                                  value: 'kirakira',
                                   child: Text('キラキラ'),
                                 ),
                                 DropdownMenuItem(
-                                  value: 'ナイト',
+                                  value: 'night',
                                   child: Text('ナイト'),
                                 ),
                               ],
@@ -260,8 +257,7 @@ class _UploadPageState extends State<UploadPage>
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFF2EDF),
                       elevation: 12,
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -275,7 +271,7 @@ class _UploadPageState extends State<UploadPage>
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.0,
-                        color: Colors.white
+                        color: Colors.white,
                       ),
                     ),
                   ),

@@ -4,6 +4,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+const Map<String, String> effectNameJa = {
+  'simple': 'シンプル',
+  'kirakira': 'キラキラ',
+  'night': 'ナイト',
+};
+
+
 class ResultPage extends StatefulWidget {
   final File originalAudio;
   final File processedAudio;
@@ -41,8 +48,8 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
     _fadeTimer?.cancel();
     _fadeTimer = Timer.periodic(const Duration(milliseconds: 120), (timer) {
       volume += 0.03;
-      if (volume >= 0.25) {
-        volume = 0.25;
+      if (volume >= 0.12) {
+        volume = 0.12;
         timer.cancel();
       }
       _cheerPlayer.setVolume(volume);
@@ -149,21 +156,6 @@ void initState() {
         _isPlaying && _current?.path == widget.processedAudio.path;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text(
-      //     'KiraStar Result',
-      //     style: TextStyle(
-      //       fontStyle: FontStyle.italic,
-      //       fontWeight: FontWeight.w700,
-      //       fontSize: 22,
-      //       letterSpacing: 1.2,
-      //       color: Colors.white,
-      //       shadows: [Shadow(blurRadius: 12, color: Colors.cyanAccent)],
-      //     ),
-      //   ),
-      //   backgroundColor: const Color(0xFF1A0033),
-      //   elevation: 0,
-      // ),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1A0033),
         foregroundColor: Colors.white,
@@ -264,7 +256,7 @@ void initState() {
                     color: Colors.black.withOpacity(0.25),
                   ),
                   child: Text(
-                    '選択エフェクト：${widget.effectStyle}',
+                    '選択エフェクト：${effectNameJa[widget.effectStyle] ?? widget.effectStyle}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -319,7 +311,7 @@ void initState() {
                   onPressed: () {
                     ScaffoldMessenger.of(
                       context,
-                    ).showSnackBar(const SnackBar(content: Text('保存しました（仮）')));
+                    ).showSnackBar(const SnackBar(content: Text('保存しました')));
                   },
                   icon: const Icon(Icons.save),
                   label: const Text(
@@ -376,52 +368,6 @@ class _WaveBarVisualizerState extends State<WaveBarVisualizer>
   }
 }
 
-// class _WaveBarPainter extends CustomPainter {
-//   final double t;
-//   _WaveBarPainter(this.t);
-
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final barCount = 36;
-//     final barWidth = size.width / barCount;
-//     final baseY = size.height;
-
-//     for (int i = 0; i < barCount; i++) {
-//       final phase = (i / barCount * 2 * pi) + (t * 2 * pi);
-//       final height = (sin(phase) + 1) * 0.5 * size.height * 0.8 + 6;
-
-//       final paint = Paint()
-//         ..shader =
-//             LinearGradient(
-//               begin: Alignment.bottomCenter,
-//               end: Alignment.topCenter,
-//               colors: [
-//                 Colors.pinkAccent.withOpacity(0.9),
-//                 Colors.cyanAccent.withOpacity(0.9),
-//               ],
-//             ).createShader(
-//               Rect.fromLTWH(i * barWidth, baseY - height, barWidth, height),
-//             );
-
-//       canvas.drawRRect(
-//         RRect.fromRectAndRadius(
-//           Rect.fromLTWH(
-//             i * barWidth + barWidth * 0.2,
-//             baseY - height,
-//             barWidth * 0.6,
-//             height,
-//           ),
-//           const Radius.circular(6),
-//         ),
-//         paint,
-//       );
-//     }
-//   }
-
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-// }
-
 class _WaveBarPainter extends CustomPainter {
   final double t;
   _WaveBarPainter(this.t);
@@ -432,37 +378,32 @@ class _WaveBarPainter extends CustomPainter {
     final barWidth = size.width / barCount;
     final baseY = size.height;
 
-    // 拍（ドンの瞬間が一番強い）
-    final beat = 1 - t;
-    final punch = pow(beat, 2).toDouble();
-
     for (int i = 0; i < barCount; i++) {
-      final rand = Random(i);
-
-      // 各バーの個性
-      final delay = rand.nextDouble() * 0.25; // 反応遅延
-      final strength = 0.6 + rand.nextDouble() * 0.6; // 強さ
-      final noise = rand.nextDouble() * 0.15; // 微揺れ
-
-      // バーごとの拍反応
-      final local = max(0.0, punch - delay) * strength + noise;
-
-      final height = size.height * (0.15 + 0.85 * local);
+      final phase = (i / barCount * 2 * pi) + (t * 2 * pi);
+      final height = (sin(phase) + 4) * 0.5 * size.height * 0.8 + 6;
 
       final paint = Paint()
-        ..color = Color.lerp(
-          Colors.pinkAccent,
-          Colors.cyanAccent,
-          rand.nextDouble(),
-        )!.withOpacity(0.95);
+        ..shader =
+            LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Colors.pinkAccent.withOpacity(0.9),
+                Colors.cyanAccent.withOpacity(0.9),
+              ],
+            ).createShader(
+              Rect.fromLTWH(i * barWidth, baseY - height, barWidth, height),
+            );
 
-      // □ ブロックで描画
-      canvas.drawRect(
-        Rect.fromLTWH(
-          i * barWidth + barWidth * 0.15,
-          baseY - height,
-          barWidth * 0.7,
-          height,
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(
+            i * barWidth + barWidth * 0.2,
+            baseY - height,
+            barWidth * 0.6,
+            height,
+          ),
+          const Radius.circular(6),
         ),
         paint,
       );
@@ -472,3 +413,54 @@ class _WaveBarPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
+
+// class _WaveBarPainter extends CustomPainter {
+//   final double t;
+//   _WaveBarPainter(this.t);
+
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     final barCount = 36;
+//     final barWidth = size.width / barCount;
+//     final baseY = size.height;
+
+//     // 拍（ドンの瞬間が一番強い）
+//     final beat = 1 - t;
+//     final punch = pow(beat, 2).toDouble();
+
+//     for (int i = 0; i < barCount; i++) {
+//       final rand = Random(i);
+
+//       // 各バーの個性
+//       final delay = rand.nextDouble() * 0.25; // 反応遅延
+//       final strength = 0.6 + rand.nextDouble() * 0.6; // 強さ
+//       final noise = rand.nextDouble() * 0.15; // 微揺れ
+
+//       // バーごとの拍反応
+//       final local = max(0.0, punch - delay) * strength + noise;
+
+//       final height = size.height * (0.15 + 0.85 * local);
+
+//       final paint = Paint()
+//         ..color = Color.lerp(
+//           Colors.pinkAccent,
+//           Colors.cyanAccent,
+//           rand.nextDouble(),
+//         )!.withOpacity(0.95);
+
+//       // □ ブロックで描画
+//       canvas.drawRect(
+//         Rect.fromLTWH(
+//           i * barWidth + barWidth * 0.15,
+//           baseY - height,
+//           barWidth * 0.7,
+//           height,
+//         ),
+//         paint,
+//       );
+//     }
+//   }
+
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+// }
