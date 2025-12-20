@@ -43,7 +43,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
     await _cheerPlayer.stop();
     await _cheerPlayer.setReleaseMode(ReleaseMode.loop);
     await _cheerPlayer.setVolume(volume);
-    await _cheerPlayer.play(AssetSource('sounds/cheer.mp3'));
+    // await _cheerPlayer.play(AssetSource('sounds/cheer.mp3'));
 
     _fadeTimer?.cancel();
     _fadeTimer = Timer.periodic(const Duration(milliseconds: 120), (timer) {
