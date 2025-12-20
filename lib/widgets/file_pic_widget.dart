@@ -5,10 +5,7 @@ import 'package:file_picker/file_picker.dart';
 class AudioPickWidget extends StatefulWidget {
   final Function(File?) onAudioSelected;
 
-  const AudioPickWidget({
-    super.key,
-    required this.onAudioSelected,
-  });
+  const AudioPickWidget({super.key, required this.onAudioSelected});
 
   @override
   State<AudioPickWidget> createState() => _AudioPickWidgetState();
@@ -18,9 +15,7 @@ class _AudioPickWidgetState extends State<AudioPickWidget> {
   File? _audioFile;
 
   Future<void> _pickAudio() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.audio,
-    );
+    final result = await FilePicker.platform.pickFiles(type: FileType.audio);
 
     if (result == null || result.files.single.path == null) return;
 
@@ -56,11 +51,16 @@ class _AudioPickWidgetState extends State<AudioPickWidget> {
               : Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.music_note, size: 40),
+                    const Icon(
+                      Icons.music_note,
+                      size: 40,
+                      color: Colors.cyanAccent,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       _audioFile!.path.split('/').last,
                       textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
